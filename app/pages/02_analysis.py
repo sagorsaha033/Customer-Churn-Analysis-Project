@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-from sqlalchemy import create_engine, text
 import plotly.express as px
 
 st.set_page_config(
@@ -11,16 +10,20 @@ st.set_page_config(
 
 @st.cache_data
 def load_data():
-    engine = create_engine("sqlite:///churn.db")
-    with engine.connect() as conn:
-        df = pd.read_sql(text("SELECT * FROM customers"), conn)
-    df["totalcharges"] = pd.to_numeric(df["totalcharges"], errors="coerce")
-    df = df.dropna(subset=["totalcharges"])
-    df["churn_binary"] = (df["churn"] == "Yes").astype(int)
-    df["tenure_group"] = pd.cut(
-        df["tenure"],
+    url = "https://raw.githubusercontent.com/sagorsaha033/Customer-Churn-Analysis-Project/main/data/raw/WA_Fn-UseC_-Telco-Customer-Churn.csv"
+    df = pd.read_csv(url)
+    df.columns = (
+        df.columns.str.strip()
+        .str.lower()
+        .str.replace(' ', '_', regex=False)
+    )
+    df['totalcharges'] = pd.to_numeric(df['totalcharges'], errors='coerce')
+    df = df.dropna(subset=['totalcharges'])
+    df['churn_binary'] = (df['churn'] == 'Yes').astype(int)
+    df['tenure_group'] = pd.cut(
+        df['tenure'],
         bins=[0, 12, 24, 48, 60, 72],
-        labels=["0-12 mo", "13-24 mo", "25-48 mo", "49-60 mo", "61-72 mo"]
+        labels=['0-12 mo', '13-24 mo', '25-48 mo', '49-60 mo', '61-72 mo']
     )
     return df
 

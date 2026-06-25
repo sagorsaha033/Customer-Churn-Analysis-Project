@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-from sqlalchemy import create_engine, text
 import plotly.express as px
 import plotly.graph_objects as go
 
@@ -13,12 +12,16 @@ st.set_page_config(
 # Load data
 @st.cache_data
 def load_data():
-    engine = create_engine("sqlite:///churn.db")
-    with engine.connect() as conn:
-        df = pd.read_sql(text("SELECT * FROM customers"), conn)
-    df["totalcharges"] = pd.to_numeric(df["totalcharges"], errors="coerce")
-    df = df.dropna(subset=["totalcharges"])
-    df["churn_binary"] = (df["churn"] == "Yes").astype(int)
+    url = "https://raw.githubusercontent.com/sagorsaha033/Customer-Churn-Analysis-Project/main/data/raw/WA_Fn-UseC_-Telco-Customer-Churn.csv"
+    df = pd.read_csv(url)
+    df.columns = (
+        df.columns.str.strip()
+        .str.lower()
+        .str.replace(' ', '_', regex=False)
+    )
+    df['totalcharges'] = pd.to_numeric(df['totalcharges'], errors='coerce')
+    df = df.dropna(subset=['totalcharges'])
+    df['churn_binary'] = (df['churn'] == 'Yes').astype(int)
     return df
 
 df = load_data()
