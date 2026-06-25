@@ -3,6 +3,8 @@
 An end-to-end Data Analytics portfolio project analyzing customer churn
 for a telecom company using SQL, Python, and Streamlit.
 
+https://customer-churn-analysis-project-um7llddm6kagndb5wkunni.streamlit.app/ - Clickable Link
+
 ---
 
 ## 🎯 Business Problem
